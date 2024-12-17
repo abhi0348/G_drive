@@ -11,7 +11,7 @@
     <ul>
         {% for folder in folders %}
         <li>
-            <a href="{% url 'folder_detail' folder.id %}">{{ folder.name }}</a>
+            <a href="{% url 'folder_details' folder.id %}">{{ folder.name }}</a>
         </li>
         {% endfor %}
     </ul>

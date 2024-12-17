@@ -6,15 +6,15 @@ from django.contrib.auth.decorators import login_required
 from .forms import FolderForm  , FileUploadForm
 from django.db import connection
 
-def get_folders(user):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM app_folder WHERE owner_id = %s;", [user.id])
-        rows = cursor.fetchall()
-        return rows
+# def get_folders(user):
+#     with connection.cursor() as cursor:
+#         cursor.execute("SELECT * FROM app_folder WHERE owner_id = %s;", [user.id])
+#         rows = cursor.fetchall()
+#         return rows
 
 @login_required  
 def home(request):
-    folders = get_folders(user = request)
+    folders = Folder.objects.filter(owner=request.user)
 
     return render(request, 'home.html', {'folders': folders})
 
@@ -82,7 +82,7 @@ def upload_file(request, folder_id):
             file = form.save(commit=False)
             file.folder = folder 
             file.save()
-            return redirect('folder_details', folder_id=folder.id) 
+            return redirect('folder_detail', folder_id=folder.id) 
     else:
         form = FileUploadForm()
 
@@ -90,7 +90,7 @@ def upload_file(request, folder_id):
 
 
 @login_required
-def folder_details(request, folder_id):
+def folder_detail(request, folder_id):
     folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
 
     return render(request, 'folder/folder_details.html', {'folder': folder})
