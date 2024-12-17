@@ -11,7 +11,7 @@ class Folder(models.Model):
 
 class File(models.Model):
     name = models.CharField(max_length=255)
-    file = models.FileField(upload_to='uploads/')  # Specify the upload folder in your project
+    file = models.FileField(upload_to='uploads/')  
     folder = models.ForeignKey(Folder, related_name='files', on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 

@@ -4,11 +4,17 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .forms import FolderForm  , FileUploadForm
+from django.db import connection
 
+def get_folders(user):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM app_folder WHERE owner_id = %s;", [user.id])
+        rows = cursor.fetchall()
+        return rows
 
 @login_required  
 def home(request):
-    folders = Folder.objects.filter(owner=request.user)
+    folders = get_folders(user = request)
 
     return render(request, 'home.html', {'folders': folders})
 
@@ -18,8 +24,8 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Log the user in after signup
-            return redirect('home')  # Redirect to home page
+            login(request, user) 
+            return redirect('home') 
     else:
         form = UserCreationForm()
 
@@ -30,11 +36,11 @@ def create_folder(request):
     if request.method == 'POST':
         form = FolderForm(request.POST)
         if form.is_valid():
-            # Set the owner to the current logged-in user
+            
             folder = form.save(commit=False)
-            folder.owner = request.user  # Add the owner (current user)
+            folder.owner = request.user 
             folder.save()
-            return redirect('folder_list')  # Redirect to a page where the folder list is shown
+            return redirect('folder_list') 
     else:
         form = FolderForm()
 
@@ -42,7 +48,7 @@ def create_folder(request):
 
 
 def folder_list(request):
-    folders = Folder.objects.filter(owner=request.user)  # Only show the folders owned by the logged-in user
+    folders = Folder.objects.filter(owner=request.user)  
     return render(request, 'folder/folder_list.html', {'folders': folders})
 
 from django.shortcuts import get_object_or_404
@@ -64,7 +70,7 @@ from django.shortcuts import get_object_or_404
 def delete_folder(request, pk):
     folder = get_object_or_404(Folder, pk=pk)
     folder.delete()
-    return redirect('folder_list')  # Redirect to the folder list page
+    return redirect('folder_list')  
 
 @login_required
 def upload_file(request, folder_id):
@@ -74,9 +80,9 @@ def upload_file(request, folder_id):
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             file = form.save(commit=False)
-            file.folder = folder  # Associate the uploaded file with the folder
+            file.folder = folder 
             file.save()
-            return redirect('folder_details', folder_id=folder.id)  # Redirect to folder detail page (you can change this)
+            return redirect('folder_details', folder_id=folder.id) 
     else:
         form = FileUploadForm()
 
@@ -84,7 +90,7 @@ def upload_file(request, folder_id):
 
 
 @login_required
-def folder_detail(request, folder_id):
+def folder_details(request, folder_id):
     folder = get_object_or_404(Folder, id=folder_id, owner=request.user)
-    # You can also pass any files associated with the folder if needed
+
     return render(request, 'folder/folder_details.html', {'folder': folder})
