@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Folder Details - {{ folder.name }}</title>
+</head>
+
+<body>
+    <h2>Folder: {{ folder.name }}</h2>
+    <!-- Add additional details here, like files inside the folder -->
+    <p>Files in this folder:</p>
+    <!-- Example loop for files in the folder -->
+    <ul>
+        {% for file in folder.files.all %}
+        <li>{{ file.name }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'folder_list' %}">Back to Folder List</a>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Drive</title>
+</head>
+
+<body>
+    <h1>Welcome, {{ user.username }}</h1>
+    <h2>Your Folders:</h2>
+    <ul>
+        {% for folder in folders %}
+        <li>
+            <a href="{% url 'folder_detail' folder.id %}">{{ folder.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'logout' %}">Logout</a>
+</body>
+
+</html>

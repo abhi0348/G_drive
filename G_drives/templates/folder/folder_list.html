@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your Folders</title>
+</head>
+
+<body>
+    <h2>Your Folders</h2>
+    <ul>
+        {% for folder in folders %}
+        <li>
+            {{ folder.name }}
+            <a href="{% url 'update_folder' folder.pk %}">Edit</a>
+            <a href="{% url 'delete_folder' folder.pk %}">Delete</a>
+            <a href="{% url 'upload_file' folder.id %}">Upload File</a>
+
+        </li>
+        {% empty %}
+        <li>No folders found.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'create_folder' %}">Create New Folder</a>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create Folder</title>
+</head>
+
+<body>
+    <h2>Create Folder</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Folder</button>
+    </form>
+</body>
+
+</html>
